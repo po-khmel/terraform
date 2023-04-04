@@ -73,7 +73,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
               vars:
                 condor_role: execute
                 condor_copy_template: false
-                condor_host: ${openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4}
+                condor_host: ${openstack_compute_instance_v2.central-manager.network.0.fixed_ip_v4}
                 condor_password: ${var.condor_pass}
           tasks:
             - name: Disable pulsar
