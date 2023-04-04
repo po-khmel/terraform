@@ -34,16 +34,16 @@ variable "image" {
    }
 }
 
-# variable "gpu_image" {
-#   type = map
-#   default = {
-#     "name"             = "vggp-gpu-v60-j16-4b8cbb05c6db-dev"
-#     "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j16-4b8cbb05c6db-dev.raw"
-#     // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
-#     "container_format" = "bare"
-#     "disk_format"      = "raw"
-#   }
-# }
+variable "gpu_image" {
+  type = map
+  default = {
+    "name"             = "vggp-gpu-v60-j16-4b8cbb05c6db-dev"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j16-4b8cbb05c6db-dev.raw"
+    // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
+    "container_format" = "bare"
+    "disk_format"      = "raw"
+  }
+}
 
 variable "public_key" {
   type = map
