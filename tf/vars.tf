@@ -8,15 +8,15 @@ variable "nfs_disk_size" {
 variable "flavors" {
   type = map
   default = {
-    "central-manager" = "<m1.medium>"
-    "nfs-server" = "<m1.medium>"
-    "exec-node" = "<m1.xlarge>"
-    "gpu-node" = "<m1.small>"
+    "central-manager" = "m1.medium"
+    "nfs-server" = "m1.medium"
+    "exec-node" = "m1.xxl"
+    "gpu-node" = "m1.medium"
   }
 }
 
 variable "exec_node_count" {
-  default = 4
+  default = 2
 }
 
 variable "gpu_node_count" {
@@ -26,68 +26,71 @@ variable "gpu_node_count" {
 variable "image" {
   type = map
   default = {
-    "name" = "vggp-v60-j224-e0d36d08062d-dev"
-    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j224-e0d36d08062d-dev.raw" 
+    "name" = "vggp-v60-j225-1a1df01ec8f3-dev.raw"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw"
+    # "name" = "vggp-v60-j224-e0d36d08062d-dev.raw"
+    # "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j224-e0d36d08062d-dev.raw"
     // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
     "container_format" = "bare"
     "disk_format" = "raw"
    }
 }
 
-variable "image" {
-  type = map
-  default = {
-    "name" = "vggp-gpu-v60-j15-521c5243b234-dev"
-    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j15-521c5243b234-dev.raw" 
-    // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
-    "container_format" = "bare"
-    "disk_format" = "raw"
-   }
-}
+# variable "image" {
+#   type = map
+#   default = {
+#     "name" = "vggp-gpu-v60-j15-521c5243b234-dev"
+#     "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j15-521c5243b234-dev.raw" 
+#     // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
+#     "container_format" = "bare"
+#     "disk_format" = "raw"
+#    }
+# }
 
 variable "public_key" {
   type = map
   default = {
-    name = "<your_VGCN_key>"
-    pubkey = "<your public key>"
+    name = "key_label"
+	  # pubkey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEgz4Q2Iy6rwmn2ol7gtRN7tcMyk7E8Q3Grrlyf+ck/E6Ik7GxIGnnAhBvlOF9drbuy7tUI3BpDl4+PHtL0ls3x0+GO/MOfb/YB+aww9C7n1TaXIsMoYYegxNRen+3Mnvze2CGFibjRcDiG+oy3X9ijkItF+NByl/fidzd8NRi49jHr3/LVJ1SR2uo3HFELlkaW7vWVw/u/QcApYSkm00VvUroafBgMlZr821/d076fqXDJMtRTf1Oggt7+k6jzTmQmKspEBh8zB29YAcQa24VgTLJ5mYyRJX+kqJE/Madoph2+obNmxm6CpmCjm9IuxigAD8yH/1pcwy2Yz8Bq61D Generated-by-Nova"
+    pubkey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6kc6o2LSHfMBjle8/t97DmxU61NmeNo2zD7+4iHy1i1w+71HmdAfID82wEaElnn6mvjj6RwM96Eew6st1JcoB9xwH9e+yfQhqwvU2hxkHJlxgM78coPtkkKa+PR6OBmeZB5uO8tjr0xnFL4MirZH0RPIHRmj+Y5Rz33xC1REzIvGS6wTGTclNmUgxA3Puix0uaV8AsZR+xGQRXX5id5rFVfEfKPDjaqBNjPUjtqo0XhdPZUuXEm3yMz2u68MM4GlPwcjbiHU66iA9vE6UCGU/YsRRwWlA9TdGPoRMawlyG8YK42ebzH7muZAE9QxfMZbw2G3qyw144dnPQGKh8pPl centos@pulsar-control-vm.garr.cloud.pa"
   }
 }
 
 variable "name_prefix" {
-  default = "<vgcn->"
+  default = "vgcn-"
 }
 
 variable "name_suffix" {
-  default = "<.pulsar>"
+  default = ".usegalaxy.eu"
 }
 
 variable "secgroups_cm" {
   type = list
   default = [
-    "<a-public-ssh>",
-    "<ingress-private>",
-    "<egress-public>",
+    "vgcn-public-ssh",
+    "vgcn-ingress-private",
+    "vgcn-egress-public",
   ]
 }
 
 variable "secgroups" {
   type = list
   default = [
-    "<ingress-private>", //Should open at least nfs, 9618 for HTCondor and 22 for ssh
-    "<egress-public>",
+    "vgcn-ingress-private",
+    "vgcn-egress-public",
   ]
 }
 
 variable "public_network" {
-  default  = "<public>"
+  default  = "floating-ip"
 }
 
 variable "private_network" {
   type = map
   default  = {
-    name = "<vgcn-private>"
-    subnet_name = "<vgcn-private-subnet>"
-    cidr4 = "<192.52.32.0/20>" //This is important to make HTCondor work
+    name = "elixir-VM-net"
+    subnet_name = "elixir-VM-subnet"
+    cidr4 = "192.168.208.0/22 "
   }
 }
 
@@ -96,8 +99,13 @@ variable "ssh-port" {
 }
 
 //set these variables during execution terraform apply -var "pvt_key=<~/.ssh/my_private_key>" -var "condor_pass=<MyCondorPassword>"
-variable "pvt_key" {}
+variable "pvt_key" {
+  # default = "~/.ssh/id_rsa"
+}
 
-variable "condor_pass" {}
+variable "condor_pass" {
+  # default = "123456"
+}
 
-variable "mq_string" {}
+variable "mq_string" {
+}

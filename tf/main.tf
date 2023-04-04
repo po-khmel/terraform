@@ -6,9 +6,9 @@ resource "openstack_compute_instance_v2" "central-manager" {
   key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
   security_groups = "${var.secgroups_cm}"
 
-  network {
-    uuid = "${data.openstack_networking_network_v2.external.id}"
-  }
+  # network {
+  #   uuid = "${data.openstack_networking_network_v2.external.id}"
+  # }
   network {
     uuid = "${data.openstack_networking_network_v2.internal.id}"
   }
@@ -19,7 +19,7 @@ resource "openstack_compute_instance_v2" "central-manager" {
       sleep 60
         ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.access_ip_v4},' \
         --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${var.private_network.cidr4}
-        condor_host=${self.network.1.fixed_ip_v4} condor_password=${var.condor_pass}
+        condor_host=${self.access_ip_v4} condor_password=${var.condor_pass}
         message_queue_url="${var.mq_string}"' \
         ansible/main.yml
     EOF
@@ -73,7 +73,7 @@ resource "openstack_compute_instance_v2" "central-manager" {
             StrictHostKeyChecking no
             UserKnownHostsFile=/dev/null
       owner: root:root
-      path: /etc.intra-vgcn-key.ssh_config
+      path: /etc/ssh/ssh_config
       permissions: '0644'
 
     runcmd:
@@ -84,4 +84,14 @@ resource "openstack_compute_instance_v2" "central-manager" {
       - [ sh, -xc, "sed -i 's|localhost.localdomain|$(hostname -f)|g' /etc/telegraf/telegraf.conf" ]
       - systemctl restart telegraf
   EOF
+}
+
+resource "openstack_networking_floatingip_v2" "myip" {
+  pool = "floating-ip"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "myip" {
+  floating_ip = "${openstack_networking_floatingip_v2.myip.address}"
+  instance_id = "${openstack_compute_instance_v2.central-manager.id}"
+  fixed_ip    = "${openstack_compute_instance_v2.central-manager.network.0.fixed_ip_v4}"
 }

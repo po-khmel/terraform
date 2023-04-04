@@ -23,6 +23,13 @@
       ansible.builtin.systemd:
         name: autofs.service
         state: restarted
+
+    # need to disable SELinux since it may interfere the copy module in scripts.yml
+    - name: Disable SELinux
+      ansible.posix.selinux:
+        state: disabled
+      become: yes
+
   tasks:
     - name: import cron tasks
       include_tasks: cron.yml
@@ -40,9 +47,9 @@
       file:
         path: "{{ pulsar_container_image_cache_path }}"
         state: directory
-        mode: '0775'
+        mode: "0775"
         owner: pulsar
-        group: pulsar 
+        group: pulsar
       become_user: pulsar
       become: yes
 
@@ -57,4 +64,3 @@
         group: pulsar
       notify: restart pulsar
       become: yes
-
