@@ -24,11 +24,11 @@
         name: autofs.service
         state: restarted
 
-    # need to disable SELinux since it may interfere the copy module in scripts.yml
-    - name: Disable SELinux
-      ansible.posix.selinux:
-        state: disabled
-      become: yes
+    # # need to disable SELinux since it may interfere the copy module in scripts.yml
+    # - name: Disable SELinux
+    #   ansible.posix.selinux:
+    #     state: disabled
+    #   become: yes
 
   tasks:
     - name: import cron tasks
